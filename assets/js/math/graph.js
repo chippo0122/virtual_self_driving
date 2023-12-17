@@ -8,6 +8,15 @@ class Graph {
     this.segements = segements
   }
 
+  pointsLength() {
+    return this.points.length
+  }
+
+  getPoint(index) {
+    if (index > this.pointsLength - 1) return null
+    return this.points[index]
+  }
+
   draw(ctx) {
     for (const seg of this.segements) {
       // seg will be a instance of class Segement
@@ -20,6 +29,30 @@ class Graph {
       console.log(point)
       point.draw(ctx)
     }
+  }
+
+  clear() {
+    this.points = []
+    this.segements = []
+  }
+
+  containsPoint(point) {
+    return this.points.find((p) => p.equals(point))
+  }
+
+  addPoint(point) {
+    this.points.push(point)
+  }
+
+  tryAddPoint(point) {
+    if (this.containsPoint(point)) return false
+
+    this.addPoint(point)
+    return true
+  }
+
+  addSegement(seg) {
+    this.segements.push(seg)
   }
 }
 
