@@ -1,0 +1,17 @@
+@import './assets/helpers/reset.css';
+
+body {
+  background-color: #000;
+  text-align: center;
+}
+
+h1 {
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#CANVAS {
+  background-color: green;
+  // width: 600px;
+  // height: 600px;
+}
