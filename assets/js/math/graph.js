@@ -12,9 +12,18 @@ class Graph {
     return this.points.length
   }
 
+  segementsLength() {
+    return this.segements.length
+  }
+
   getPoint(index) {
-    if (index > this.pointsLength - 1) return null
+    if (index > this.pointsLength() - 1) return null
     return this.points[index]
+  }
+
+  getSegement(index) {
+    if (index > this.segementsLength() - 1) return null
+    return this.segements[index]
   }
 
   draw(ctx) {
@@ -40,6 +49,10 @@ class Graph {
     return this.points.find((p) => p.equals(point))
   }
 
+  containsSegement(seg) {
+    return this.segements.find((s) => s.equals(seg))
+  }
+
   addPoint(point) {
     this.points.push(point)
   }
@@ -53,6 +66,16 @@ class Graph {
 
   addSegement(seg) {
     this.segements.push(seg)
+  }
+
+  tryAddSegement(seg) {
+    if (this.containsSegement(seg) && !seg.p1.equals(seg.p2)) return false
+    this.addSegement(seg)
+    return true
+  }
+
+  removeSegement(seg) {
+    this.segements.splice(this.segements.indexOf(seg), 1)
   }
 }
 

@@ -10,6 +10,7 @@ CANVAS.height = 600
 const ctx = CANVAS.getContext("2d")
 const addPointBtn = document.querySelector("#controls .add-point")
 const addSegementBtn = document.querySelector("#controls .add-segement")
+const removeSegementBtn = document.querySelector("#controls .remove-segement")
 
 const p1 = new Point(200, 200)
 const p2 = new Point(150, 500)
@@ -29,21 +30,43 @@ const addRandomPoint = () => {
   const isAdd = graph.tryAddPoint(
     new Point(Math.random() * CANVAS.width, Math.random() * CANVAS.height)
   )
+
+  console.log(isAdd)
+
+  if (!isAdd) return
   ctx.clearRect(0, 0, CANVAS.width, CANVAS.height) // clear all points and segements
   graph.draw(ctx)
-  console.log(isAdd)
 }
 
 const addRandomSegement = () => {
   // get randow points in graph
   const index1 = Math.floor(Math.random() * graph.pointsLength())
   const index2 = Math.floor(Math.random() * graph.pointsLength())
-  graph.addSegement(
+
+  // index1 and index2 should not be the same && duplicate segement also should not be in the array
+  const isAdd = graph.tryAddSegement(
     new Segement(graph.getPoint(index1), graph.getPoint(index2))
   )
+
+  console.log(isAdd)
+
+  if (!isAdd) return
+  ctx.clearRect(0, 0, CANVAS.width, CANVAS.height) // clear all points and segements
+  graph.draw(ctx)
+}
+
+const removeRandomSegement = () => {
+  if (graph.segementsLength() < 1) return
+
+  const index = Math.floor(Math.random() * graph.pointsLength())
+
+  graph.removeSegement(graph.getSegement(index))
+
+  console.log("!!")
   ctx.clearRect(0, 0, CANVAS.width, CANVAS.height) // clear all points and segements
   graph.draw(ctx)
 }
 
 addPointBtn.addEventListener("click", addRandomPoint)
 addSegementBtn.addEventListener("click", addRandomSegement)
+removeSegementBtn.addEventListener("click", removeRandomSegement)
