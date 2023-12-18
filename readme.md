@@ -4,4 +4,4 @@
 
 https://www.youtube.com/watch?v=5iHejdqYIa8&
 
-watch to 32:12
+watch to 47:46

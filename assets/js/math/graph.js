@@ -29,18 +29,16 @@ class Graph {
   draw(ctx) {
     for (const seg of this.segements) {
       // seg will be a instance of class Segement
-      console.log(seg)
       seg.draw(ctx)
     }
 
     for (const point of this.points) {
       // point will be a instance of class Point
-      console.log(point)
       point.draw(ctx)
     }
   }
 
-  clear() {
+  depose() {
     this.points = []
     this.segements = []
   }
@@ -64,11 +62,24 @@ class Graph {
     return true
   }
 
+  getSegementWithPoint(point) {
+    return this.segements.filter((el) => el.includes(point))
+  }
+
+  removePoint(point) {
+    const segs = this.getSegementWithPoint(point)
+    segs.forEach((el) => {
+      this.removeSegement(el)
+    })
+    this.points.splice(this.points.indexOf(point), 1)
+  }
+
   addSegement(seg) {
     this.segements.push(seg)
   }
 
   tryAddSegement(seg) {
+    if (this.points.length < 2) return false
     if (this.containsSegement(seg) && !seg.p1.equals(seg.p2)) return false
     this.addSegement(seg)
     return true

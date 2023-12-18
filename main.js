@@ -11,6 +11,8 @@ const ctx = CANVAS.getContext("2d")
 const addPointBtn = document.querySelector("#controls .add-point")
 const addSegementBtn = document.querySelector("#controls .add-segement")
 const removeSegementBtn = document.querySelector("#controls .remove-segement")
+const removePointBtn = document.querySelector("#controls .remove-point")
+const removeAllBtn = document.querySelector("#controls .remove-all")
 
 const p1 = new Point(200, 200)
 const p2 = new Point(150, 500)
@@ -55,6 +57,14 @@ const addRandomSegement = () => {
   graph.draw(ctx)
 }
 
+const removeRandomPoint = () => {
+  if (graph.pointsLength() === 0) return
+  const index = Math.floor(Math.random() * graph.pointsLength())
+  graph.removePoint(graph.getPoint(index))
+  ctx.clearRect(0, 0, CANVAS.width, CANVAS.height)
+  graph.draw(ctx)
+}
+
 const removeRandomSegement = () => {
   if (graph.segementsLength() < 1) return
 
@@ -62,7 +72,12 @@ const removeRandomSegement = () => {
 
   graph.removeSegement(graph.getSegement(index))
 
-  console.log("!!")
+  ctx.clearRect(0, 0, CANVAS.width, CANVAS.height) // clear all points and segements
+  graph.draw(ctx)
+}
+
+const removeAll = () => {
+  graph.depose()
   ctx.clearRect(0, 0, CANVAS.width, CANVAS.height) // clear all points and segements
   graph.draw(ctx)
 }
@@ -70,3 +85,5 @@ const removeRandomSegement = () => {
 addPointBtn.addEventListener("click", addRandomPoint)
 addSegementBtn.addEventListener("click", addRandomSegement)
 removeSegementBtn.addEventListener("click", removeRandomSegement)
+removePointBtn.addEventListener("click", removeRandomPoint)
+removeAllBtn.addEventListener("click", removeAll)
