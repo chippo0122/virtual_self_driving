@@ -3,12 +3,11 @@ import GraphEditor from "./assets/js/graphEditor"
 import Graph from "./assets/js/math/graph"
 import Point from "./assets/js/primitives/point"
 import Segement from "./assets/js/primitives/segement"
+import ViewPort from "./assets/js/viewPort"
 import "./style.scss"
 
 CANVAS.width = 600
 CANVAS.height = 600
-
-const ctx = CANVAS.getContext("2d")
 
 const p1 = new Point(200, 200)
 const p2 = new Point(150, 500)
@@ -20,13 +19,30 @@ const s2 = new Segement(p2, p3)
 const s3 = new Segement(p3, p4)
 const s4 = new Segement(p1, p4)
 
-const graph = new Graph([p1, p2, p3, p4], [s1, s2, s3, s4])
-const graphEditor = new GraphEditor(CANVAS, graph)
+const graphString = localStorage.getItem("graph")
+const graphInfo = graphString ? JSON.parse(graphString) : null
+const graph = graphInfo ? Graph.load(graphInfo) : new Graph()
+const viewport = new ViewPort(CANVAS)
+const graphEditor = new GraphEditor(viewport, graph)
 
 const animate = () => {
-  ctx.clearRect(0, 0, CANVAS.width, CANVAS.height)
+  viewport.reset()
   graphEditor.display()
   requestAnimationFrame(animate)
 }
 
 animate()
+
+const disposeBtn = document.querySelector(".dispose-btn")
+const saveBtn = document.querySelector(".save-btn")
+
+const dispose = () => {
+  graphEditor.dispose()
+}
+
+const save = () => {
+  localStorage.setItem("graph", JSON.stringify(graph))
+}
+
+disposeBtn.addEventListener("click", dispose)
+saveBtn.addEventListener("click", save)

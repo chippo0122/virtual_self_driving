@@ -1,11 +1,25 @@
 /** @format */
-
+import Point from "../primitives/point"
+import Segement from "../primitives/segement"
 // G = (V, E); Graph, V = Point, Node, E = Segements, Edges
 
 class Graph {
   constructor(points = [], segements = []) {
     this.points = points
     this.segements = segements
+  }
+
+  static load(info) {
+    const points = info.points.map((point) => new Point(point.x, point.y))
+    const segements = info.segements.map(
+      (seg) =>
+        new Segement(
+          points.find((p) => p.equals(seg.p1)),
+          points.find((p) => p.equals(seg.p2))
+        )
+    )
+
+    return new Graph(points, segements)
   }
 
   pointsLength() {

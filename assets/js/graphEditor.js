@@ -1,11 +1,11 @@
 /** @format */
-import Point from "./primitives/point"
 import Segement from "./primitives/segement"
 import { getNearestPoint } from "./math/utils"
 
 class GraphEditor {
-  constructor(canvas, graph) {
-    this.canvas = canvas
+  constructor(viewport, graph) {
+    this.viewport = viewport
+    this.canvas = viewport.canvas
     this.graph = graph
 
     this.ctx = this.canvas.getContext("2d")
@@ -36,9 +36,13 @@ class GraphEditor {
   }
 
   #handleMouseMove(e) {
-    this.mouse = new Point(e.offsetX, e.offsetY)
+    this.mouse = this.viewport.getMouse(e, true)
 
-    this.hovered = getNearestPoint(this.mouse, this.graph.points, 15)
+    this.hovered = getNearestPoint(
+      this.mouse,
+      this.graph.points,
+      15 * this.viewport.zoom
+    )
 
     if (this.dragging == true) {
       this.selected.x = this.mouse.x
@@ -57,7 +61,7 @@ class GraphEditor {
     }
 
     if (e.button == 0) {
-      this.mouse = new Point(e.offsetX, e.offsetY)
+      this.mouse = this.viewport.getMouse(e, true)
 
       if (this.hovered) {
         // build a new segement between two existing point
@@ -90,6 +94,12 @@ class GraphEditor {
     if (this.selected == point) {
       this.selected = null
     }
+  }
+
+  dispose() {
+    this.graph.depose()
+    this.selected = null
+    this.hovered = null
   }
 
   display() {
