@@ -1,8 +1,43 @@
 /** @format */
 
+import Point from "./point"
+import Segement from "./segement"
+import { getIntersection } from "../math/utils"
+
 class Polygon {
   constructor(points) {
     this.points = points
+    this.segements = []
+
+    for (let i = 1; i <= points.length; i++) {
+      this.segements.push(
+        new Segement(points[i - 1], points[i % points.length])
+      )
+    }
+  }
+
+  static break(poly1, poly2) {
+    const segs1 = poly1.segements
+    const segs2 = poly2.segements
+    const intersections = []
+
+    for (let i = 0; i < segs1.length; i++) {
+      for (let j = 0; j < segs2.length; j++) {
+        const int = getIntersection(
+          segs1[i].p1,
+          segs1[i].p2,
+          segs2[j].p1,
+          segs2[j].p2
+        )
+
+        if (int && int.offset != 1 && int.offset != 0) {
+          const point = new Point(int.x, int.y)
+          intersections.push(point)
+        }
+      }
+    }
+
+    return intersections
   }
 
   draw(
@@ -20,6 +55,8 @@ class Polygon {
     ctx.closePath()
     ctx.fill()
     ctx.stroke()
+
+    this.points.forEach((el) => el.draw(ctx)) // detect
   }
 }
 
