@@ -14,7 +14,7 @@ const graphString = localStorage.getItem("graph")
 const graphInfo = graphString ? JSON.parse(graphString) : null
 const graph = graphInfo ? Graph.load(graphInfo) : new Graph()
 
-const world = new World(graph, 100, 3)
+const world = new World(graph, 100, 10)
 
 const viewport = new ViewPort(CANVAS)
 const graphEditor = new GraphEditor(viewport, graph)
@@ -23,6 +23,7 @@ const animate = () => {
   viewport.reset()
   world.generate()
   world.draw(ctx)
+  ctx.globalAlpha = 0.3
   graphEditor.display()
   requestAnimationFrame(animate)
 }

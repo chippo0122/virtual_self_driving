@@ -51,7 +51,7 @@ const lerp = (a, b, t) => {
 
 // 找交點 // 我看不懂
 const getIntersection = (A, B, C, D) => {
-  const tTop = (D.x - C.x) * (A.y, C.y) - (D.y - C.y) * (A.x - C.x)
+  const tTop = (D.x - C.x) * (A.y - C.y) - (D.y - C.y) * (A.x - C.x)
   const uTop = (C.y - A.y) * (A.x - B.x) - (C.x - A.x) * (A.y - B.y)
   const bottom = (D.y - C.y) * (B.x - A.x) - (D.x - C.x) * (B.y - A.y)
 
@@ -70,6 +70,15 @@ const getIntersection = (A, B, C, D) => {
   return null
 }
 
+const getRandomColor = () => {
+  const hue = 290 + Math.random() * 260
+  return `hsl(${hue}, 100%, 60%)`
+}
+
+const average = (p1, p2) => {
+  return new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2)
+}
+
 export {
   getNearestPoint,
   add,
@@ -78,4 +87,6 @@ export {
   translate,
   angle,
   getIntersection,
+  getRandomColor,
+  average,
 }

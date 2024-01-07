@@ -7,6 +7,7 @@ class World {
     this.graph = graph
     this.roadWidth = roadWidth
     this.roadRoundness = roundness
+    this.roadBorders = []
     this.envelopes = []
 
     this.generate()
@@ -18,16 +19,18 @@ class World {
       this.envelopes.push(new Envelope(seg, this.roadWidth, this.roadRoundness))
     }
 
-    this.intersections = Polygon.break(
-      this.envelopes[0].poly,
-      this.envelopes[1].poly
-    )
+    this.roadBorders = Polygon.union(this.envelopes.map((el) => el.poly))
   }
 
   draw(ctx) {
-    this.envelopes.forEach((env) => env.draw(ctx))
-    this.intersections.forEach((int) =>
-      int.draw(ctx, { color: "red", size: 15 })
+    this.envelopes.forEach((env) =>
+      env.draw(ctx, { fill: "#BBB", stroke: "#BBB", lineWidth: 15 })
+    )
+    this.graph.segements.forEach((seg) =>
+      seg.draw(ctx, { color: "white", width: 4, dash: [10, 10] })
+    )
+    this.roadBorders.forEach((seg) =>
+      seg.draw(ctx, { color: "white", width: 4 })
     )
   }
 }

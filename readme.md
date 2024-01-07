@@ -4,6 +4,4 @@
 
 https://www.youtube.com/watch?v=5iHejdqYIa8&
 
-watch to 2:28:58
-
-some issue has to fix, polygons intersection cannot be wrong
+watch to 2:49:30
