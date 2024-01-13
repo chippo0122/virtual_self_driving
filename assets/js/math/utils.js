@@ -29,6 +29,14 @@ const subtract = (p1, p2) => {
   return new Point(p1.x - p2.x, p1.y - p2.y)
 }
 
+const normalize = (p) => {
+  return scale(p, 1 / magnitude(p))
+}
+
+const magnitude = (p) => {
+  return Math.hypot(p.x, p.y)
+}
+
 const scale = (p, scaler) => {
   return new Point(p.x * scaler, p.y * scaler)
 }
@@ -82,6 +90,8 @@ const average = (p1, p2) => {
 export {
   getNearestPoint,
   add,
+  distance,
+  normalize,
   subtract,
   scale,
   translate,

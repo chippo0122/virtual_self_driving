@@ -1,5 +1,5 @@
 /** @format */
-
+import { distance, subtract, normalize } from "../math/utils"
 class Segement {
   constructor(p1, p2) {
     this.p1 = p1
@@ -15,6 +15,14 @@ class Segement {
     ctx.lineTo(this.p2.x, this.p2.y)
     ctx.stroke()
     ctx.setLineDash([])
+  }
+
+  directionVector() {
+    return normalize(subtract(this.p2, this.p1))
+  }
+
+  length() {
+    return distance(this.p1, this.p2)
   }
 
   includes(point) {
