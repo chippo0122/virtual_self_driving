@@ -1,8 +1,9 @@
 /** @format */
 import Envelope from "./primitives/envelope"
 import Polygon from "./primitives/polygon"
-import { scale, add } from "./math/utils"
+import { scale, add, lerp, distance } from "./math/utils"
 import Segement from "./primitives/segement"
+import Point from "./primitives/point"
 
 class World {
   constructor(
@@ -11,11 +12,13 @@ class World {
     roundness = 3,
     buildingWidth = 150,
     buildingMinLength = 150,
-    spacing = 50
+    spacing = 50,
+    treeSize = 160
   ) {
     this.graph = graph
     this.roadWidth = roadWidth
     this.roadRoundness = roundness
+    this.treeSize = treeSize
 
     this.buildingWidth = buildingWidth
     this.buildingMinLength = buildingMinLength
@@ -24,6 +27,7 @@ class World {
     this.roadBorders = []
     this.envelopes = []
     this.buildings = []
+    this.trees = []
 
     this.generate()
   }
@@ -78,7 +82,90 @@ class World {
       bases.push(new Envelope(seg, this.buildingWidth, 0).poly)
     }
 
+    // 如果有重疊的房子必須移除
+    const epsilon = 0.001
+    for (let i = 0; i < bases.length; i++) {
+      for (let j = i + 1; j < bases.length; j++) {
+        if (
+          bases[i].intersectsPoly(bases[j]) ||
+          bases[i].distanceToPoly(bases[j]) < this.spacing - epsilon
+        ) {
+          bases.splice(j, 1)
+          j -= 1
+        }
+      }
+    }
+
     return bases
+  }
+
+  #generateTrees() {
+    //抓目前地圖飯範圍內所有的點
+    const points = [
+      ...this.roadBorders.map((s) => [s.p1, s.p2]).flat(),
+      ...this.buildings.map((s) => s.points).flat(),
+    ]
+    // 取邊界
+    const left = Math.min(...points.map((p) => p.x))
+    const right = Math.max(...points.map((p) => p.x))
+    const top = Math.min(...points.map((p) => p.y))
+    const bottom = Math.max(...points.map((p) => p.y))
+
+    const illegalPolys = [
+      ...this.buildings,
+      ...this.envelopes.map((e) => e.poly),
+    ]
+
+    const trees = []
+    let tryCount = 0
+    while (tryCount < 100) {
+      const p = new Point(
+        lerp(left, right, Math.random()),
+        lerp(bottom, top, Math.random())
+      )
+      let keep = true
+      for (const poly of illegalPolys) {
+        // 樹不應該在建築物或馬路上 或 靠他們太近
+        if (
+          poly.containsPoint(p) ||
+          poly.distanceToPoint(p) < this.treeSize / 2
+        ) {
+          keep = false
+          break
+        }
+      }
+
+      // 樹不應該重疊
+      if (keep) {
+        for (const tree of trees) {
+          if (distance(tree, p) < this.treeSize) {
+            keep = false
+            break
+          }
+        }
+      }
+
+      //  樹不應該離建築物或馬路太遠
+      if (keep) {
+        let closeToSomething = false
+        for (const poly of illegalPolys) {
+          if (poly.distanceToPoint(p) < this.treeSize * 2) {
+            closeToSomething = true
+            break
+          }
+        }
+        keep = closeToSomething
+      }
+
+      if (keep) {
+        trees.push(p)
+        tryCount = 0
+      }
+
+      tryCount++
+    }
+
+    return trees
   }
 
   generate() {
@@ -89,6 +176,7 @@ class World {
 
     this.roadBorders = Polygon.union(this.envelopes.map((el) => el.poly))
     this.buildings = this.#generateBuildings()
+    this.trees = this.#generateTrees()
   }
 
   draw(ctx) {
@@ -101,9 +189,11 @@ class World {
     this.roadBorders.forEach((seg) =>
       seg.draw(ctx, { color: "white", width: 4 })
     )
-
-    this.buildings.forEach((el) => {
-      el.draw(ctx)
+    this.buildings.forEach((env) => {
+      env.draw(ctx)
+    })
+    this.trees.forEach((p) => {
+      p.draw(ctx, { size: this.treeSize, color: "rgba(0,0,0,0.5)" })
     })
   }
 }

@@ -22,6 +22,10 @@ class Graph {
     return new Graph(points, segements)
   }
 
+  hash() {
+    return JSON.stringify(this)
+  }
+
   pointsLength() {
     return this.points.length
   }

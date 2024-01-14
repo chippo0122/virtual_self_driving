@@ -1,5 +1,13 @@
 /** @format */
-import { distance, subtract, normalize } from "../math/utils"
+import {
+  distance,
+  subtract,
+  normalize,
+  scale,
+  magnitude,
+  add,
+  dot,
+} from "../math/utils"
 class Segement {
   constructor(p1, p2) {
     this.p1 = p1
@@ -31,6 +39,28 @@ class Segement {
 
   equals(seg) {
     return this.includes(seg.p1) && this.includes(seg.p2) // any cases
+  }
+
+  distanceToPoint(p) {
+    const proj = this.projectPoint(p)
+    if (proj.offset > 0 && proj.offset < 1) {
+      return distance(p, proj.point)
+    }
+    const distToP1 = distance(p, this.p1)
+    const distToP2 = distance(p, this.p2)
+    return Math.min(distToP1, distToP2)
+  }
+
+  projectPoint(p) {
+    const a = subtract(p, this.p1)
+    const b = subtract(this.p2, this.p1)
+    const normB = normalize(b)
+    const scaler = dot(a, normB)
+    const proj = {
+      point: add(this.p1, scale(normB, scaler)),
+      offset: scaler / magnitude(b),
+    }
+    return proj
   }
 }
 

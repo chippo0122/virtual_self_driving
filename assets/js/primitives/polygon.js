@@ -76,6 +76,27 @@ class Polygon {
     }
   }
 
+  intersectsPoly(poly) {
+    // 看當前實體的多邊形有沒有跟其他多邊形（參數帶進來的）有重疊
+    for (let s1 of this.segements) {
+      for (let s2 of poly.segements) {
+        if (getIntersection(s1.p1, s1.p2, s2.p1, s2.p2)) {
+          return true
+        }
+      }
+    }
+
+    return false
+  }
+
+  distanceToPoint(p) {
+    return Math.min(...this.segements.map((s) => s.distanceToPoint(p)))
+  }
+
+  distanceToPoly(poly) {
+    return Math.min(...this.points.map((p) => poly.distanceToPoint(p)))
+  }
+
   containsSegement(seg) {
     const midpoint = average(seg.p1, seg.p2)
     return this.containsPoint(midpoint)

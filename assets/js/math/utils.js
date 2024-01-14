@@ -20,6 +20,10 @@ const distance = (p1, p2) => {
   return Math.hypot(p1.x - p2.x, p1.y - p2.y)
 }
 
+const dot = (p1, p2) => {
+  return p1.x * p2.x + p1.y * p2.y
+}
+
 const add = (p1, p2) => {
   return new Point(p1.x + p2.x, p1.y + p2.y)
 }
@@ -63,7 +67,8 @@ const getIntersection = (A, B, C, D) => {
   const uTop = (C.y - A.y) * (A.x - B.x) - (C.x - A.x) * (A.y - B.y)
   const bottom = (D.y - C.y) * (B.x - A.x) - (D.x - C.x) * (B.y - A.y)
 
-  if (bottom != 0) {
+  const epsilon = 0.001
+  if (Math.abs(bottom) > epsilon) {
     const t = tTop / bottom
     const u = uTop / bottom
     if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
@@ -94,9 +99,12 @@ export {
   normalize,
   subtract,
   scale,
+  lerp,
+  dot,
   translate,
   angle,
   getIntersection,
   getRandomColor,
   average,
+  magnitude,
 }
