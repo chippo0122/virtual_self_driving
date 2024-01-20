@@ -5,6 +5,7 @@ import { scale, add, lerp, distance } from "./math/utils"
 import Segement from "./primitives/segement"
 import Point from "./primitives/point"
 import Tree from "./items/tree"
+import Building from "./items/building"
 
 class World {
   constructor(
@@ -97,14 +98,14 @@ class World {
       }
     }
 
-    return bases
+    return bases.map((el) => new Building(el))
   }
 
   #generateTrees() {
     //抓目前地圖飯範圍內所有的點
     const points = [
       ...this.roadBorders.map((s) => [s.p1, s.p2]).flat(),
-      ...this.buildings.map((s) => s.points).flat(),
+      ...this.buildings.map((s) => s.base.points).flat(),
     ]
     // 取邊界
     const left = Math.min(...points.map((p) => p.x))
@@ -113,7 +114,7 @@ class World {
     const bottom = Math.max(...points.map((p) => p.y))
 
     const illegalPolys = [
-      ...this.buildings,
+      ...this.buildings.map((el) => el.base),
       ...this.envelopes.map((e) => e.poly),
     ]
 
@@ -191,7 +192,7 @@ class World {
       seg.draw(ctx, { color: "white", width: 4 })
     )
     this.buildings.forEach((env) => {
-      env.draw(ctx)
+      env.draw(ctx, viewPoint)
     })
     this.trees.forEach((p) => {
       p.draw(ctx, viewPoint)
