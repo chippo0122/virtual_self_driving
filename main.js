@@ -28,6 +28,7 @@ const animate = () => {
     world.generate()
     oldHashGraph = graph.hash()
   }
+  // 抓取中心點
   const viewPoint = scale(viewport.getOffset(), -1)
   world.draw(ctx, viewPoint)
   ctx.globalAlpha = 0.3

@@ -61,6 +61,10 @@ const lerp = (a, b, t) => {
   return a + (b - a) * t
 }
 
+const lerp2D = (a, b, t) => {
+  return new Point(lerp(a.x, b.x, t), lerp(a.y, b.y, t))
+}
+
 // 找交點 // 我看不懂
 const getIntersection = (A, B, C, D) => {
   const tTop = (D.x - C.x) * (A.y - C.y) - (D.y - C.y) * (A.x - C.x)
@@ -100,6 +104,7 @@ export {
   subtract,
   scale,
   lerp,
+  lerp2D,
   dot,
   translate,
   angle,
