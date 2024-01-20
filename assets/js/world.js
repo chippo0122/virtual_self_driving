@@ -4,6 +4,7 @@ import Polygon from "./primitives/polygon"
 import { scale, add, lerp, distance } from "./math/utils"
 import Segement from "./primitives/segement"
 import Point from "./primitives/point"
+import Tree from "./items/tree"
 
 class World {
   constructor(
@@ -138,7 +139,7 @@ class World {
       // 樹不應該重疊
       if (keep) {
         for (const tree of trees) {
-          if (distance(tree, p) < this.treeSize) {
+          if (distance(tree.center, p) < this.treeSize) {
             keep = false
             break
           }
@@ -158,7 +159,7 @@ class World {
       }
 
       if (keep) {
-        trees.push(p)
+        trees.push(new Tree(p, this.treeSize))
         tryCount = 0
       }
 
@@ -179,7 +180,7 @@ class World {
     this.trees = this.#generateTrees()
   }
 
-  draw(ctx) {
+  draw(ctx, viewPoint) {
     this.envelopes.forEach((env) =>
       env.draw(ctx, { fill: "#BBB", stroke: "#BBB", lineWidth: 15 })
     )
@@ -193,7 +194,7 @@ class World {
       env.draw(ctx)
     })
     this.trees.forEach((p) => {
-      p.draw(ctx, { size: this.treeSize, color: "rgba(0,0,0,0.5)" })
+      p.draw(ctx, viewPoint)
     })
   }
 }

@@ -1,6 +1,7 @@
 /** @format */
 import GraphEditor from "./assets/js/graphEditor"
 import Graph from "./assets/js/math/graph"
+import { scale } from "./assets/js/math/utils"
 import ViewPort from "./assets/js/viewPort"
 import World from "./assets/js/world"
 import "./style.scss"
@@ -27,7 +28,8 @@ const animate = () => {
     world.generate()
     oldHashGraph = graph.hash()
   }
-  world.draw(ctx)
+  const viewPoint = scale(viewport.getOffset(), -1)
+  world.draw(ctx, viewPoint)
   ctx.globalAlpha = 0.3
   graphEditor.display()
   requestAnimationFrame(animate)
