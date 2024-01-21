@@ -191,11 +191,17 @@ class World {
     this.roadBorders.forEach((seg) =>
       seg.draw(ctx, { color: "white", width: 4 })
     )
-    this.buildings.forEach((env) => {
-      env.draw(ctx, viewPoint)
-    })
-    this.trees.forEach((p) => {
-      p.draw(ctx, viewPoint)
+
+    const items = [...this.buildings, ...this.trees]
+
+    // 離viewpoint比較遠的多邊形應該要先繪製，才能符合透視效果
+    items.sort(
+      (a, b) =>
+        b.base.distanceToPoint(viewPoint) - a.base.distanceToPoint(viewPoint)
+    )
+
+    items.forEach((el) => {
+      el.draw(ctx, viewPoint)
     })
   }
 }
