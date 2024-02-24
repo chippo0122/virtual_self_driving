@@ -1,5 +1,6 @@
 /** @format */
-import GraphEditor from "./assets/js/graphEditor"
+import GraphEditor from "./assets/js/editors/graphEditor"
+import StopEditor from "./assets/js/editors/stopEditor"
 import Graph from "./assets/js/math/graph"
 import { scale } from "./assets/js/math/utils"
 import ViewPort from "./assets/js/viewPort"
@@ -19,6 +20,7 @@ const world = new World(graph, 100, 10)
 
 const viewport = new ViewPort(CANVAS)
 const graphEditor = new GraphEditor(viewport, graph)
+const stopEditor = new StopEditor(viewport, world)
 
 let oldHashGraph = graph.hash()
 
@@ -33,6 +35,7 @@ const animate = () => {
   world.draw(ctx, viewPoint)
   ctx.globalAlpha = 0.3
   graphEditor.display()
+  stopEditor.display()
   requestAnimationFrame(animate)
 }
 
@@ -40,6 +43,29 @@ animate()
 
 const disposeBtn = document.querySelector(".dispose-btn")
 const saveBtn = document.querySelector(".save-btn")
+const graphBtn = document.querySelector("#graphBtn")
+const stopBtn = document.querySelector("#stopBtn")
+
+const setMode = (mode) => {
+  disableEditors()
+  switch (mode) {
+    case "graph":
+      stopBtn.disabled = false
+      graphEditor.enable()
+      break
+    case "stop":
+      graphBtn.disabled = false
+      stopEditor.enable()
+      break
+  }
+}
+
+const disableEditors = () => {
+  graphEditor.disable()
+  graphBtn.disabled = true
+  stopBtn.disabled = true
+  stopEditor.disable()
+}
 
 const dispose = () => {
   graphEditor.dispose()
@@ -49,5 +75,9 @@ const save = () => {
   localStorage.setItem("graph", JSON.stringify(graph))
 }
 
+setMode("graph")
+
 disposeBtn.addEventListener("click", dispose)
 saveBtn.addEventListener("click", save)
+stopBtn.addEventListener("click", () => setMode("stop"))
+graphBtn.addEventListener("click", () => setMode("graph"))

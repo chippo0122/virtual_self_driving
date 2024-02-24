@@ -1,6 +1,6 @@
 /** @format */
-import Segement from "./primitives/segement"
-import { getNearestPoint } from "./math/utils"
+import Segement from "../primitives/segement"
+import { getNearestPoint } from "../math/utils"
 
 class GraphEditor {
   constructor(viewport, graph) {
@@ -18,21 +18,41 @@ class GraphEditor {
 
     this.mouse = null
 
+    // this.#addEventListener()
+  }
+
+  enable() {
     this.#addEventListener()
   }
 
+  disable() {
+    this.#removeEventListener()
+    this.selected = false
+    this.hovered = false
+  }
+
   #addEventListener() {
-    this.canvas.addEventListener("mousedown", this.#handleMouseDown.bind(this))
+    this.boundMouseDown = this.#handleMouseDown.bind(this)
+    this.canvas.addEventListener("mousedown", this.boundMouseDown)
 
-    this.canvas.addEventListener("mousemove", this.#handleMouseMove.bind(this))
+    this.boundMouseMove = this.#handleMouseMove.bind(this)
+    this.canvas.addEventListener("mousemove", this.boundMouseMove)
 
-    this.canvas.addEventListener("mouseup", () => {
-      this.dragging = false
-    })
+    this.boundMouseUp = () => (this.dragging = false)
+    this.canvas.addEventListener("mouseup", this.boundMouseUp)
 
-    this.canvas.addEventListener("contextmenu", (e) => {
-      e.preventDefault()
-    })
+    this.boundContextMenu = (e) => e.preventDefault()
+    this.canvas.addEventListener("contextmenu", this.boundContextMenu)
+  }
+
+  #removeEventListener() {
+    this.canvas.removeEventListener("mousedown", this.boundMouseDown)
+
+    this.canvas.removeEventListener("mousemove", this.boundMouseMove)
+
+    this.canvas.removeEventListener("mouseup", this.boundMouseUp)
+
+    this.canvas.removeEventListener("contextmenu", this.boundContextMenu)
   }
 
   #handleMouseMove(e) {

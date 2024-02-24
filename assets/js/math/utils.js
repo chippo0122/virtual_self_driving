@@ -16,6 +16,25 @@ const getNearestPoint = (loc, points, threshold = Number.MAX_SAFE_INTEGER) => {
   return nereast
 }
 
+const getNearestSegements = (
+  loc,
+  segs,
+  threshold = Number.MAX_SAFE_INTEGER
+) => {
+  let minDist = Number.MAX_SAFE_INTEGER
+  let nereast = null
+
+  segs.forEach((seg) => {
+    const dist = seg.distanceToPoint(loc)
+    if (dist < minDist && dist < threshold) {
+      minDist = dist
+      nereast = seg
+    }
+  })
+
+  return nereast
+}
+
 const distance = (p1, p2) => {
   return Math.hypot(p1.x - p2.x, p1.y - p2.y)
 }
@@ -98,6 +117,7 @@ const average = (p1, p2) => {
 
 export {
   getNearestPoint,
+  getNearestSegements,
   add,
   distance,
   normalize,
